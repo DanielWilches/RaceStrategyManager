@@ -1,0 +1,60 @@
+<div class="bg-white rounded-lg shadow-md overflow-hidden"
+     [class]="customClass()"
+     [class.ring-2]="isSelected()"
+     [class.ring-blue-500]="isSelected()">
+
+  <div class="p-4 border-b border-gray-200">
+    <h3 class="font-semibold text-lg">
+      {{ title() || 'Estrategia #' + strategy().id }}
+    </h3>
+  </div>
+
+  <div class="p-4">
+    <ul class="space-y-3">
+      <li>
+        <div class="text-gray-600">ID Estrategia:</div>
+        <div class="font-medium mt-1">{{ strategy().id }}</div>
+      </li>
+      <li>
+        <div class="text-gray-600">ID Piloto:</div>
+        <div class="font-medium mt-1">{{ strategy().pilotId }}</div>
+      </li>
+      <li>
+        <div class="text-gray-600">ID Cliente:</div>
+        <div class="font-medium mt-1">{{ strategy().clientId }}</div>
+      </li>
+      <li>
+        <div class="text-gray-600">Fecha:</div>
+        <div class="font-medium mt-1">{{ strategy().date | date:'short' }}</div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="bg-gray-50 p-4">
+    <h4 class="font-medium text-gray-700 mb-2">Detalles de Rendimiento</h4>
+    <div class="space-y-2">
+      <div class="flex justify-between">
+        <span class="text-gray-600">Total Vueltas:</span>
+        <span class="font-medium">{{ strategy().totalLaps }}</span>
+      </div>
+      <div class="flex justify-between">
+        <span class="text-gray-600">Rendimiento Promedio:</span>
+        <span class="font-medium">{{ strategy().avgPerformance | number:'1.2-2' }}</span>
+      </div>
+      <div class="flex justify-between">
+        <span class="text-gray-600">Consumo Promedio:</span>
+        <span class="font-medium">{{ strategy().avgConsumption | number:'1.2-2' }} L</span>
+      </div>
+      <div class="flex justify-between">
+        <span class="text-gray-600">Vueltas Máximas:</span>
+        <span class="font-medium">{{ strategy().maxLaps }}</span>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="p-4 bg-gray-100">
+    <h5 class="font-medium text-sm text-gray-700 mb-1">Estrategia Óptima:</h5>
+    <p class="text-sm text-gray-600">{{ strategy().optimalStrategy }}</p>
+  </div>
+</div>

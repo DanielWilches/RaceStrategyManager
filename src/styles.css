@@ -382,7 +382,7 @@ template {
 html,
 body {
   height: 100%;
-  overflow: hidden;
+
 }
 
 .cards-container {

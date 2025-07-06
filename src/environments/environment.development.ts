@@ -1,8 +1,11 @@
+import { Version } from "@angular/core";
+
 export const environment = {
 
-  baseURL: '', // Cambiado a ruta relativa para usar el proxy
+  baseURL: 'https://localhost:7262',
   Version: 'v1',
   Pilots: 'Pilots',
+  Clients: 'Clients',
   Strategy: 'Strategy',
   Tires: 'Tires',
   VersionApi: 'v1',

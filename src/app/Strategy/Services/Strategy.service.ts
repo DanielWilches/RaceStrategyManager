@@ -14,7 +14,6 @@ export class StrategyService {
   _url: string = environment.baseURL;
 
   constructor() {
-
     this._url = `${this._url}/api/${environment.VersionApi}/${environment.Strategy}`;
   }
 
@@ -23,6 +22,7 @@ export class StrategyService {
   }
 
   postStrategy(strategy: CreateStrategyRequest): Observable<ModelResult<StrategiesModel>> {
+    console.log('Posting strategy:', strategy);
     return this.http.post<ModelResult<StrategiesModel>>(this._url, strategy);
   }
 }

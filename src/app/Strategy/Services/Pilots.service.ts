@@ -11,11 +11,16 @@ import { Observable } from 'rxjs';
 export class PilotsService {
   http = inject(HttpClient);
   _url: string = environment.baseURL;
-  constructor() {
-    this._url = `${this._url}/api/${environment.VersionApi}/${environment.Pilots}`;
 
+  constructor() {
+    this._url = `${this._url}/api/${environment.VersionApi}/${environment.Strategy}/${environment.Pilots}`;
   }
-  getStrategies(): Observable<ModelResult<PilotsModel>> {
+
+  getPilots(): Observable<ModelResult<PilotsModel>> {
     return this.http.get<ModelResult<PilotsModel>>(this._url);
+  }
+
+  getPilot(id: string): Observable<ModelResult<PilotsModel>> {
+    return this.http.post<ModelResult<PilotsModel>>(this._url, id);
   }
 }

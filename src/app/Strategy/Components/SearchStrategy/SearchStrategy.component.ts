@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
 import { ClientsModel } from '@Interfaces/ClientsModel.interface';
 import { CreateStrategyRequest } from '@Interfaces/CreateStrategyRequest.interface';
+import { ModelResult } from '@Interfaces/ModelResult.interface';
 import { PilotsModel } from '@Interfaces/PilotsModel.interface';
 import { ClientService } from '@Services/Client.service';
 import { PilotsService } from '@Services/Pilots.service';
@@ -21,28 +22,13 @@ export class SearchStrategyComponent implements OnInit {
   client: WritableSignal<ClientsModel> = signal<ClientsModel>({} as ClientsModel);
   searchText: WritableSignal<string> = signal<string>('');
   selectedPilotId: WritableSignal<string> = signal<string>('');
-  request:CreateStrategyRequest = {} as CreateStrategyRequest;
+  request: CreateStrategyRequest = {} as CreateStrategyRequest;
   constructor() { }
 
   ngOnInit() {
     this.Getpilots();
-    // Inicializar cliente con un ID por defecto o obtenerlo de algún servicio
-    // Por ahora, voy a crear un cliente temporal para evitar el error
-    this.initializeClient();
+    this.getClient('1');
   }
-
-  initializeClient() {
-    // Temporal: crear un cliente básico para evitar errores
-    // En una aplicación real, esto vendría de un servicio de autenticación
-    const tempClient: ClientsModel = {
-      id: 1, // ID temporal
-      // Agrega otras propiedades según tu interfaz ClientsModel
-    } as ClientsModel;
-
-    this.client.set(tempClient);
-    console.log('Client initialized:', this.client());
-  }
-
 
   Getpilots() {
     this.pilotService.getPilots().subscribe(
@@ -50,25 +36,51 @@ export class SearchStrategyComponent implements OnInit {
         sub.data.forEach((strategy: PilotsModel) => {
           this.pilots.update((current) => [...current, strategy]);
         });
-        console.log('Strategies loaded:', this.pilots());
       });
-    console.log('Loading strategies...');
+  }
+
+  getClient(id: string) {
+    this.ClientService.getClient(id).subscribe(
+      (sub) => {
+        sub.data.forEach((client: ClientsModel) => {
+          this.client.set(client);
+        });
+      });
+    console.log('Loading client...');
+  }
+
+  postStrategy() {
+    this.StrategyService.postStrategy(this.request).subscribe({
+      next: (sub:ModelResult<null>) => {
+        console.log('Strategy posted successfully:', sub);
+        this.searchText.set('');
+        this.selectedPilotId.set('');
+        if (sub.statusCode !== 200) {
+          alert('Error al crear la estrategia');
+        }
+        else { alert('Estrategia creada exitosamente'); }
+
+        this.StrategyService.getStrategies();
+      },
+      error: (error) => {
+        console.error('Error posting strategy:', error);
+        alert('Error al crear la estrategia');
+      }
+    });
   }
 
   onSearchTextChange(event: Event) {
     const target = event.target as HTMLInputElement;
+    console.log('Search text changed:', target.value);
     this.searchText.set(target.value);
   }
 
+  /// declaración del evento para el cambio de piloto
+  /// se usa para capturar el cambio de selección en el dropdown de pilotos
   onPilotChange(event: Event) {
-    const target = event.target as HTMLSelectElement;
+    const target: HTMLSelectElement = event.target as HTMLSelectElement;
     this.selectedPilotId.set(target.value);
     console.log('Pilot selected:', target.value);
-
-    // Opcional: Si quieres obtener datos del cliente cuando se selecciona un piloto
-    if (target.value) {
-      // this.getClient(target.value); // Descomenta si necesitas obtener datos del cliente
-    }
   }
 
   onSearch() {
@@ -88,23 +100,13 @@ export class SearchStrategyComponent implements OnInit {
       return;
     }
 
-    // Enviar el POST con los valores capturados
-    this.postStrategy(this.searchText(), parseInt(this.selectedPilotId()));
+
+    this.CreatePostStrategy(this.searchText(), parseInt(this.selectedPilotId()));
   }
 
-  getClient(id: string) {
-    this.ClientService.getClient(id).subscribe(
-      (sub) => {
-        sub.data.forEach((client: ClientsModel) => {
-          this.client.set(client);
-        });
-        console.log('Client loaded:', this.pilots());
-      });
-    console.log('Loading client...');
-  }
 
-  postStrategy(value: string, id: number ){
 
+  CreatePostStrategy(value: string, id: number) {
     // Validar que tenemos un cliente válido
     if (!this.client() || !this.client().id) {
       console.error('No hay cliente disponible');
@@ -112,7 +114,6 @@ export class SearchStrategyComponent implements OnInit {
       return;
     }
 
-    // Buscar el piloto seleccionado
     const selectedPilot = this.pilots().find(pilot => pilot.id === id);
     if (!selectedPilot) {
       console.error('Piloto no encontrado');
@@ -128,16 +129,10 @@ export class SearchStrategyComponent implements OnInit {
       pilotId: selectedPilot.id.toString(),
       maxLaps: value
     };
+    this.postStrategy();
 
-    this.StrategyService.postStrategy(this.request).subscribe({
-      next: (sub) => {
-        console.log('Strategy posted successfully:', sub);
-      },
-      error: (error) => {
-        console.error('Error posting strategy:', error);
-        alert('Error al crear la estrategia');
-      }
-    });
     console.log('Posting strategy...');
   }
+
+
 }

@@ -1,11 +1,13 @@
 <div class="cards-container overflow-y-auto pb-4">
-  @for (strategy of strategies(); track strategy.id) {
-    <app-card-strategy
+  @for (strategy of strategyServices.strategies(); track strategy.id) {
+     <app-card-strategy
       [strategy]="strategy"
       [isSelected]="false"
       [customClass]="'mb-4'"
       [title]="'Estrategia #' + strategy.id">
     </app-card-strategy>
+
+    <!-- <p>{{strategy.pilots.name || 'No pilot assigned'}}</p> -->
   } @empty {
     <div class="text-center text-gray-500 py-8">
       <p>No hay estrategias disponibles</p>

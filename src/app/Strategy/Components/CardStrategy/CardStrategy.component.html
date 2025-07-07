@@ -1,3 +1,5 @@
+
+
 <div class="bg-white rounded-lg shadow-md overflow-hidden"
      [class]="customClass()"
      [class.ring-2]="isSelected()"
@@ -11,17 +13,14 @@
 
   <div class="p-4">
     <ul class="space-y-3">
+
       <li>
-        <div class="text-gray-600">ID Estrategia:</div>
-        <div class="font-medium mt-1">{{ strategy().id }}</div>
-      </li>
-      <li>
-        <div class="text-gray-600">ID Piloto:</div>
-        <div class="font-medium mt-1">{{ strategy().pilotId }}</div>
+        <div class="text-gray-600">nombre:</div>
+        <div class="font-medium mt-1">{{ strategy().pilots.name }}</div>
       </li>
       <li>
         <div class="text-gray-600">ID Cliente:</div>
-        <div class="font-medium mt-1">{{ strategy().clientId }}</div>
+        <div class="font-medium mt-1">{{ strategy().clients.name }}</div>
       </li>
       <li>
         <div class="text-gray-600">Fecha:</div>
@@ -53,8 +52,16 @@
     </div>
   </div>
 
-  <div class="p-4 bg-gray-100">
-    <h5 class="font-medium text-sm text-gray-700 mb-1">Estrategia Óptima:</h5>
-    <p class="text-sm text-gray-600">{{ strategy().optimalStrategy }}</p>
+  <div class="p-4 border-t border-gray-200">
+    <h4 class="font-medium text-gray-700 mb-3">Pasos de la Estrategia</h4>
+    <ol class="list-decimal list-inside space-y-1">
+      @for (step of strategy().optimalStrategy.split('|'); track $index) {
+        @if (step.trim()) {
+          <li class="text-sm text-gray-700 p-2 bg-gray-50 rounded">
+            {{ step.trim() }}
+          </li>
+        }
+      }
+    </ol>
   </div>
 </div>

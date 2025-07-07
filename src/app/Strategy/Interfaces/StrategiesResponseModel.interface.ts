@@ -1,9 +1,10 @@
+import { ClientsModel } from "./ClientsModel.interface";
 import { PilotsModel } from "./PilotsModel.interface";
 
-export interface StrategiesModel {
+export interface StrategiesResponse {
   id: number;
-  pilotId: number | PilotsModel;
-  clientId: number | string;
+  pilots:PilotsModel;
+  clients: ClientsModel;
   date: Date;
   totalLaps: number;
   optimalStrategy: string;
